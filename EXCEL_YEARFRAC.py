@@ -4,7 +4,7 @@ class EXCEL_YEARFRAC():
     def __init__(self):
         pass
 
-    def appears_le_year(self, date1, date2):
+    def appears_le_year(self, date1:datetime.date, date2:datetime.date):
         # Returns True if date1 and date2 "appear" to be 1 year or less apart.
         # This compares the values of year, month, and day directly to each other.
         # Requires date1 <= date2; returns boolean. Used by basis 1.
@@ -17,22 +17,29 @@ class EXCEL_YEARFRAC():
         return False
 
     # Check if year is a leap year
-    def is_leap_year(self, year):
+    def is_leap_year(self, year:int):
         return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
 
-    def feb29_between(self, date1, date2):
+    def feb29_between(self, date1:datetime.date, date2:datetime.date):
         # Check each year in the range
         for year in range(date1.year, date2.year + 1):
             if self.is_leap_year(year):
-                leap_day = datetime.datetime(year, 2, 29)
+                leap_day = datetime.date(year, 2, 29)
                 if date1 <= leap_day <= date2:
                     return True
         return False
 
-    def diffdays(self, date1, date2):
+    def diffdays(self, date1:datetime.date, date2:datetime.date):
         return (date2-date1).total_seconds()  / 86400
 
-    def basis1(self, date1, date2):
+    def basis1(self, date1:Union[datetime.date,None], date2:Union[datetime.date,None]):
+        if date1 and date2:
+            if type(date1) == datetime.datetime:
+                date1 = date1.date()
+            elif type(date2) == datetime.datetime:
+                date2 = date2.date()
+        else:
+            return None
         # Swap so date1 <= date2 in all cases:
         if date1 > date2:
             date1, date2 = date2, date1
